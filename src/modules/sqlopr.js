@@ -57,7 +57,7 @@ module.exports = {
             },
             {
                 where:{
-                    eng: english
+                    english: eng
                 }
             }
             );

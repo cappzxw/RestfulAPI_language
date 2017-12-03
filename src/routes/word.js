@@ -69,7 +69,7 @@ export default class WordRouter {
     //const zang = ctx.query.zang;
     const { eng, chinese, zang} = ctx.validatedBody;
     if(lang == 'tibet'){
-      const result = await sqlopr.updateTran(eng, zang);
+      const result = await sqlopr.updateTrans(eng, zang);
       ctx.body = { result };
     }
     else{
