@@ -168,50 +168,52 @@ module.exports = {
         }
     },
 
-    addFilePath: async function addFilePath(foldername,chpath, trpath, tag){
-            const table = 'tibet_filepath';  
-            const Table = sequelize.define(table, {
-                arg: Sequelize.STRING,
-                content: Sequelize.STRING, 
+    addFilePath: async function addFilePath(key, filepath, tag){
+            var Table = sequelize.define('tibet_filepath', {
+                key: {type: Sequelize.STRING, allowNull: false},
+                filepath: {type: Sequelize.STRING(2040), allowNull: false},
+                tag: {type: Sequelize.STRING, allowNull: false},
             });
             const result = await Table.create({
-                foldername: foldername,
-                chpath: chpath,
-                trpath: trpath,
+                key: key,
+                filepath: filepath,
                 tag: tag
             });
+            if(result){
+                return 'success';
+            }
     },
-
-    searchFilePath: async function searchFilePath(foldername){
-            const table = 'tibet_filepath';  
-            const Table = sequelize.define(table, {
-                arg: Sequelize.STRING,
-                content: Sequelize.STRING, 
+    
+    searchFilePath: async function searchFilePath(key){
+            var Table = sequelize.define('tibet_filepath', {
+                key: {type: Sequelize.STRING, allowNull: false},
+                filepath: {type: Sequelize.STRING(2040), allowNull: false},
+                tag: {type: Sequelize.STRING, allowNull: false},
             });
-            const result = await Table.findOne({
+            const result = await Table.findAll({
                 attributes:[
-                    'chpath', 'trpath'
+                    'filepath'
                 ],
                 where:{
-                    foldername: foldername
+                    key: key
                 }
             });
             return result;
     },
-
-    searchFolder: async function searchFolder(tag){
-            const table = 'tibet_filepath';  
-            const Table = sequelize.define(table, {
-                arg: Sequelize.STRING,
-                content: Sequelize.STRING, 
+    //search the filelist
+    searchKeyname: async function searchKeyname(tag){
+            var Table = sequelize.define('tibet_filepath', {
+                key: {type: Sequelize.STRING, allowNull: false},
+                filepath: {type: Sequelize.STRING(2040), allowNull: false},
+                tag: {type: Sequelize.STRING, allowNull: false},
             });
             const result = await Table.findAll({
                 attributes:[
-                    'foldername',
+                    [sequelize.literal('distinct `key`'),'key']
                 ],
                 where:{
                     tag: tag
-                }
+                },
             });
             return result;
     },

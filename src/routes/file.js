@@ -33,19 +33,24 @@ export default class SampleRouter {
     //trfile: { type: 'file', required: 'true', description: '上传文件，获取url' },
   })
   //@middlewares([upload.fields([{ name: 'file'}, { name: 'trfile'}])])
-  @middlewares([upload.array('file', 2)])
+  @middlewares([upload.single('file')])
   @query({
     // page: { type: 'number', default: 1, required: false, description: 'page number' },
     // limit: { type: 'number', default: 10, required: false, description: 'return item number limit' },
-    lang: { type: 'string', default: 1, required: true, description: 'lang' }
+    lang: { type: 'string', default: 1, required: true, description: 'lang' },
+    sort: { type: 'string', default: 1, required: true, description: 'sort' },
+    key: { type: 'string', default: 1, required: true, description: 'key' },
   })
   @responses({ 200: { description: 'file upload success' }, 500: { description: 'something wrong about server' } })
   static async upload(ctx) {
-    const file = ctx.req.files;
+    const file = ctx.req.file;
+    const sort = ctx.query.sort;
+    const key = ctx.query.key;
     //const filepath = file.path;
     file.url = getFileUrl(file.filename);
-    //console.log(file);
-    ctx.body = { result: file };
+    //console.log(file); 
+    const result = await sqlopr.addFilePath(key, file.path, sort);
+    ctx.body = { result };
   }
 
   @request('get','/file/sorts')
@@ -58,23 +63,27 @@ export default class SampleRouter {
   @request('get','/file/filelist')
   @summary('get all filelist of one kind of sort')
   @tag
-  @query({ sort: { type: 'string', required: true } })
+  @query({ lang: { type: 'string', required: true },
+          sort: { type: 'string', required: true }
+  })
   static async getfilelist(ctx) {
     const sort = ctx.query.sort;
-    const result = await sqlopr.searchFolder(sort);
+    const result = await sqlopr.searchKeyname(sort);
     ctx.body = result;
   }
 
   @request('get','/file/filecontents')
   @summary('get filecontents of one file in the list')
   @tag
-  @query({ folder: { type: 'string', required: true } })
+  @query({ lang: { type: 'string', required: true },
+          key: { type: 'string', required: true }
+  })
   static async getfilecontents(ctx) {
-    const folder = ctx.query.folder;
-    const path = await sqlopr.searchFilePath(folder);
+    const key = ctx.query.key;
+    const path = await sqlopr.searchFilePath(key);
     let result = {};
-    result.chfile = fs.readFileSync(path.dataValues.chpath, "utf8");
-    result.trfile = fs.readFileSync(path.dataValues.trpath, "utf8");
+    result.chfile = fs.readFileSync(path[0].filepath, "utf8");
+    result.trfile = fs.readFileSync(path[1].filepath, "utf8");
     ctx.body = result;
   }
 }
