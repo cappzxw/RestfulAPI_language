@@ -166,5 +166,54 @@ module.exports = {
         else{
             return '该条不存在';
         }
-    }
+    },
+
+    addFilePath: async function addFilePath(foldername,chpath, trpath, tag){
+            const table = 'tibet_filepath';  
+            const Table = sequelize.define(table, {
+                arg: Sequelize.STRING,
+                content: Sequelize.STRING, 
+            });
+            const result = await Table.create({
+                foldername: foldername,
+                chpath: chpath,
+                trpath: trpath,
+                tag: tag
+            });
+    },
+
+    searchFilePath: async function searchFilePath(foldername){
+            const table = 'tibet_filepath';  
+            const Table = sequelize.define(table, {
+                arg: Sequelize.STRING,
+                content: Sequelize.STRING, 
+            });
+            const result = await Table.findOne({
+                attributes:[
+                    'chpath', 'trpath'
+                ],
+                where:{
+                    foldername: foldername
+                }
+            });
+            return result;
+    },
+
+    searchFolder: async function searchFolder(tag){
+            const table = 'tibet_filepath';  
+            const Table = sequelize.define(table, {
+                arg: Sequelize.STRING,
+                content: Sequelize.STRING, 
+            });
+            const result = await Table.findAll({
+                attributes:[
+                    'foldername',
+                ],
+                where:{
+                    tag: tag
+                }
+            });
+            return result;
+    },
+
 }

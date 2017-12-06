@@ -1,6 +1,6 @@
 import Router from 'koa-router';
 
-import FileuploadRouter from 'routes/fileupload';
+import FileRouter from 'routes/file';
 import UserRouter from 'routes/user';
 import WordRouter from 'routes/word';
 import ItemRouter from 'routes/item';
@@ -14,7 +14,7 @@ wrapper(router);
 
 router.swagger({ swaggerHtmlEndpoint: '/swagger-html', swaggerJsonEndpoint: '/swagger-json', title: 'Server', description: 'API DOC', version: '1.0.0' });
 
-router.map(FileuploadRouter);
+router.map(FileRouter);
 router.map(UserRouter);
 router.map(LanguageRouter);
 router.map(WordRouter);
