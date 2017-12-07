@@ -4,6 +4,7 @@ import Doc from 'swag';
 import parse from 'url-parse'
 import sqlopr from 'modules/sqlopr';
 import fs from 'fs';
+import send from 'koa-send';
 
 const { request, summary, query, tags, path, formData, middlewares, responses, body } = Doc;
 
@@ -85,5 +86,24 @@ export default class SampleRouter {
     result.chfile = fs.readFileSync(path[0].filepath, "utf8");
     result.trfile = fs.readFileSync(path[1].filepath, "utf8");
     ctx.body = result;
+  }
+
+  @request('get','/file/downloadfile')
+  @summary('download file with file key')
+  @tag
+  @query({ lang: { type: 'string', required: true },
+          key: { type: 'string', required: true },
+          doc: { type: 'string', required: true }
+  })
+  static async downloadfile(ctx){
+    const key = ctx.query.key;
+    const doc = ctx.query.doc;
+    const path = await sqlopr.searchFilePath(key);
+    if(doc == 'chinese'){
+      await send(ctx, path[0].filepath, { root: '/' });
+    }
+    else{
+      await send(ctx, path[1].filepath, { root: '/' });
+    }
   }
 }
