@@ -2,6 +2,7 @@ import exception from 'class/exception';
 
 import { request, summary, body, tags, middlewares, path, description } from 'swag';
 import { query } from '../swag/index';
+import createToken from 'middleware/createToken'
 
 const tag = tags(['User']);
 const userSchema = {
@@ -40,7 +41,8 @@ export default class UserRouter {
     if (name !== 'admin') throw new exception.ForbiddenError('用户名不存在');
     if (password !== 'admin') throw new exception.ForbiddenError('密码错误');
     const msg = 'success';
-    ctx.body = { msg };
+    let token = createToken(name);
+    ctx.body = { msg, token };
   }
 
 }

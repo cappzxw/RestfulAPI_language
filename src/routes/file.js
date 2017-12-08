@@ -40,13 +40,19 @@ export default class SampleRouter {
     // limit: { type: 'number', default: 10, required: false, description: 'return item number limit' },
     lang: { type: 'string', default: 1, required: true, description: 'lang' },
     sort: { type: 'string', default: 1, required: true, description: 'sort' },
-    key: { type: 'string', default: 1, required: true, description: 'key' },
+    // key: { type: 'string', default: 1, required: true, description: 'key' },
   })
   @responses({ 200: { description: 'file upload success' }, 500: { description: 'something wrong about server' } })
   static async upload(ctx) {
     const file = ctx.req.file;
     const sort = ctx.query.sort;
-    const key = ctx.query.key;
+    
+    let j = file.originalname.indexOf('.');
+    let key = file.originalname.substring(0, j);
+    let i = file.originalname.indexOf('_');
+    if(i != -1){
+      key = file.originalname.substring(0, i);
+    }
     //const filepath = file.path;
     file.url = getFileUrl(file.filename);
     //console.log(file); 
@@ -100,9 +106,11 @@ export default class SampleRouter {
     const doc = ctx.query.doc;
     const path = await sqlopr.searchFilePath(key);
     if(doc == 'chinese'){
+      ctx.attachment(key+'.txt');
       await send(ctx, path[0].filepath, { root: '/' });
     }
     else{
+      ctx.attachment(key+'_tibet.txt');
       await send(ctx, path[1].filepath, { root: '/' });
     }
   }
