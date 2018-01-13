@@ -4,6 +4,7 @@ import { request, summary, body, tags, middlewares, path, description } from 'sw
 
 import sqlopr from 'modules/sqlopr';
 import { query } from '../swag/index';
+import checkToken from 'middleware/checkToken';
 
 const tag = tags(['Word']);
 const wordSchema = {
@@ -22,6 +23,7 @@ export default class WordRouter {
 
   @request('get', '/dic/{lang}/words')
   @summary('word list')
+  @middlewares(checkToken)
   @tag
   @path({ lang: { type: 'string', required: true } })
   @query({ initial: { type: 'string', default: 1, required: true, description: 'initial' } })
@@ -39,6 +41,7 @@ export default class WordRouter {
 
   @request('get', '/dic/{lang}/word/{eng}')
   @summary('get trans by english')
+  @middlewares(checkToken)
   @tag
   @path({ lang: { type: 'string', required: true },
           eng: { type: 'string', required: true }

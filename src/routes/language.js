@@ -3,7 +3,7 @@ import exception from 'class/exception';
 import { request, summary, body, tags, middlewares, path, description } from 'swag';
 
 import { query } from '../swag/index';
-import checkToken from 'middleware/checkToken'
+import checkToken from 'middleware/checkToken';
 
 const tag = tags(['Language']);
 

@@ -4,6 +4,7 @@ import { request, summary, body, tags, middlewares, path, description } from 'sw
 
 import sqlopr from 'modules/sqlopr';
 import { query } from '../swag/index';
+import checkToken from 'middleware/checkToken';
 
 const tag = tags(['Item']);
 const itemSchema = {
@@ -22,6 +23,7 @@ export default class ItemRouter {
 
   @request('get', '/add/{lang}/{branch}/show')
   @summary('table branch list')
+  @middlewares(checkToken)
   @tag
   @path({ lang: { type: 'string', required: true },
           branch: { type: 'string', required: true }

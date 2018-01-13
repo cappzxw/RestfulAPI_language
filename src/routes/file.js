@@ -5,6 +5,7 @@ import parse from 'url-parse'
 import sqlopr from 'modules/sqlopr';
 import fs from 'fs';
 import send from 'koa-send';
+import checkToken from 'middleware/checkToken';
 
 const { request, summary, query, tags, path, formData, middlewares, responses, body } = Doc;
 
@@ -62,6 +63,7 @@ export default class SampleRouter {
 
   @request('get','/file/sorts')
   @summary('get  sorts of files')
+  @middlewares(checkToken)
   @tag
   static async getsort(ctx) {
     ctx.body = { config_sort };
@@ -69,6 +71,7 @@ export default class SampleRouter {
 
   @request('get','/file/filelist')
   @summary('get all filelist of one kind of sort')
+  @middlewares(checkToken)
   @tag
   @query({ lang: { type: 'string', required: true },
           sort: { type: 'string', required: true }
@@ -81,6 +84,7 @@ export default class SampleRouter {
 
   @request('get','/file/filecontents')
   @summary('get filecontents of one file in the list')
+  @middlewares(checkToken)
   @tag
   @query({ lang: { type: 'string', required: true },
           key: { type: 'string', required: true }
@@ -96,6 +100,7 @@ export default class SampleRouter {
 
   @request('get','/file/downloadfile')
   @summary('download file with file key')
+  @middlewares(checkToken)
   @tag
   @query({ lang: { type: 'string', required: true },
           key: { type: 'string', required: true },
