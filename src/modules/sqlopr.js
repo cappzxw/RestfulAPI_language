@@ -1,12 +1,7 @@
 import Sequelize from 'sequelize';
 
-// const sequelize = new Sequelize('minority_language', 'root', null, {
-//     host: '127.0.0.1',
-//     dialect: 'mysql'
-// });
-
-const sequelize = new Sequelize('minority_language', 'capp', 'Sjtu10013', {
-    host: '139.224.15.56',
+const sequelize = new Sequelize('minority_language', 'root', null, {
+    host: '127.0.0.1',
     dialect: 'mysql'
 });
 
@@ -168,8 +163,8 @@ module.exports = {
         }
     },
 
-    addFilePath: async function addFilePath(key, filepath, tag){
-            var Table = sequelize.define('tibet_filepath', {
+    addFilePath: async function addFilePath(key, filepath, tag, lang){
+            var Table = sequelize.define(lang, {
                 key: {type: Sequelize.STRING, allowNull: false},
                 filepath: {type: Sequelize.STRING(2040), allowNull: false},
                 tag: {type: Sequelize.STRING, allowNull: false},
@@ -184,8 +179,9 @@ module.exports = {
             }
     },
     
-    searchFilePath: async function searchFilePath(key){
-            var Table = sequelize.define('tibet_filepath', {
+    // file sys 
+    searchFilePath: async function searchFilePath(key, lang){
+            var Table = sequelize.define(lang, {
                 key: {type: Sequelize.STRING, allowNull: false},
                 filepath: {type: Sequelize.STRING(2040), allowNull: false},
                 tag: {type: Sequelize.STRING, allowNull: false},
@@ -201,8 +197,8 @@ module.exports = {
             return result;
     },
     //search the filelist
-    searchKeyname: async function searchKeyname(tag){
-            var Table = sequelize.define('tibet_filepath', {
+    searchKeyname: async function searchKeyname(tag, lang){
+            var Table = sequelize.define(lang, {
                 key: {type: Sequelize.STRING, allowNull: false},
                 filepath: {type: Sequelize.STRING(2040), allowNull: false},
                 tag: {type: Sequelize.STRING, allowNull: false},

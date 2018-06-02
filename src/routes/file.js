@@ -47,7 +47,8 @@ export default class SampleRouter {
   static async upload(ctx) {
     const file = ctx.req.file;
     const sort = ctx.query.sort;
-    
+    let lang = ctx.query.lang;
+    lang += '_filepaths';
     let j = file.originalname.indexOf('.');
     let key = file.originalname.substring(0, j);
     let i = file.originalname.indexOf('_');
@@ -57,7 +58,7 @@ export default class SampleRouter {
     //const filepath = file.path;
     file.url = getFileUrl(file.filename);
     //console.log(file); 
-    const result = await sqlopr.addFilePath(key, file.path, sort);
+    const result = await sqlopr.addFilePath(key, file.path, sort, lang);
     ctx.body = { result };
   }
 
@@ -78,7 +79,9 @@ export default class SampleRouter {
   })
   static async getfilelist(ctx) {
     const sort = ctx.query.sort;
-    const result = await sqlopr.searchKeyname(sort);
+    let lang = ctx.query.lang;
+    lang += '_filepaths';
+    const result = await sqlopr.searchKeyname(sort, lang);
     ctx.body = result;
   }
 
@@ -91,7 +94,9 @@ export default class SampleRouter {
   })
   static async getfilecontents(ctx) {
     const key = ctx.query.key;
-    const path = await sqlopr.searchFilePath(key);
+    let lang = ctx.query.lang;
+    lang += '_filepaths';
+    const path = await sqlopr.searchFilePath(key, lang);
     let result = {};
     result.chfile = fs.readFileSync(path[0].filepath, "utf8");
     result.trfile = fs.readFileSync(path[1].filepath, "utf8");
@@ -109,13 +114,15 @@ export default class SampleRouter {
   static async downloadfile(ctx){
     const key = ctx.query.key;
     const doc = ctx.query.doc;
-    const path = await sqlopr.searchFilePath(key);
+    let lang = ctx.query.lang;
+    let lang_p = lang + '_filepaths';
+    const path = await sqlopr.searchFilePath(key, lang_p);
     if(doc == 'chinese'){
       ctx.attachment(key+'.txt');
       await send(ctx, path[0].filepath, { root: '/' });
     }
     else{
-      ctx.attachment(key+'_tibet.txt');
+      ctx.attachment(key+'_'+lang+'.txt');
       await send(ctx, path[1].filepath, { root: '/' });
     }
   }
