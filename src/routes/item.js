@@ -30,15 +30,10 @@ export default class ItemRouter {
   })
   static async getAllItems(ctx) {
     const { lang, branch } = ctx.validatedParams;
-    if(lang == 'tibet'){
-      const result = await sqlopr.searchAllItems(branch);
-      ctx.body = { result };
-    }
-    else{
-      ctx.body = {msg_todo};
-    }
+    const result = await sqlopr.searchAllItems(branch, lang);
+    ctx.body = { result };
   }
-
+  
   @request('post', '/add/{lang}/{branch}/create')
   @summary('table branch item create')
   @tag
@@ -55,13 +50,8 @@ export default class ItemRouter {
     // const arg = ctx.query.arg;
     // const content = ctx.query.content;
     const { arg, content } = ctx.validatedBody;
-    if(lang == 'tibet'){
-      const result = await sqlopr.createItem(branch, arg, content);
-      ctx.body = { result };
-    }
-    else{
-      ctx.body = {msg_todo};
-    }
+    const result = await sqlopr.createItem(branch, arg, content, lang);
+    ctx.body = { result };
   }
 
   @request('post', '/add/{lang}/{branch}/delete')
@@ -78,13 +68,8 @@ export default class ItemRouter {
     const { lang, branch } = ctx.validatedParams;
     // const arg = ctx.query.arg;
     const { arg } = ctx.validatedBody;
-    if(lang == 'tibet'){
-      const result = await sqlopr.deleteItem(branch, arg);
-      ctx.body = { result };
-    }
-    else{
-      ctx.body = { msg_todo };
-    }
+    const result = await sqlopr.deleteItem(branch, arg, lang);
+    ctx.body = { result };
   }
 
   @request('post', '/add/{lang}/{branch}/update')
@@ -103,13 +88,8 @@ export default class ItemRouter {
     // const arg = ctx.query.arg;
     // const con = ctx.query.content;
     const { arg, content } = ctx.validatedBody;
-    if(lang == 'tibet'){
-      const result = await sqlopr.updateItem(branch, arg, content);
-      ctx.body = { result };
-    }
-    else{
-      ctx.body = { msg_todo };
-    }
+    const result = await sqlopr.updateItem(branch, arg, content, lang);
+    ctx.body = { result };
   }
 }
 

@@ -4,7 +4,7 @@ import { request, summary, body, tags, middlewares, path, description } from 'sw
 
 import { query } from '../swag/index';
 import checkToken from 'middleware/checkToken';
-
+import config from 'config';
 const tag = tags(['Language']);
 
 // const logTime = () => async (ctx, next) => {
@@ -24,7 +24,18 @@ export default class LanguageRouter {
   @middlewares(checkToken)
   @tag
   static async getAllLanguages(ctx) {
-    ctx.body = { lang_config };
+    //ctx.body = {lang_config};
+    ctx.body = config.baseLanguage;
+  }
+
+  @request('get', '/dic/branches/{lang}')
+  @summary('language list')
+  @middlewares(checkToken)
+  @path({ lang: { type: 'string', required: true }})
+  @tag
+  static async getAllBranch(ctx) {
+    const lang = ctx.validatedParams.lang;
+    ctx.body = config.baseBranch[lang];
   }
 
 }

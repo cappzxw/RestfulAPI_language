@@ -15,7 +15,7 @@ function getFileUrl(filename) {
   return `${config.baseUrl}/file/${filename}`;
 }
 const tag = tags(['File']);
-const config_sort = ['教育', '军事', '体育', '娱乐', '财经', '科技'];
+// const config_sort = ['教育', '军事', '体育', '娱乐', '财经', '科技'];
 const date = new Date();
 const storage = multer.diskStorage({
   destination: function(req, file, cb){
@@ -67,7 +67,7 @@ export default class SampleRouter {
   @middlewares(checkToken)
   @tag
   static async getsort(ctx) {
-    ctx.body = { config_sort };
+    ctx.body = config.baseSort;
   }
 
   @request('get','/file/filelist')

@@ -58,9 +58,9 @@ module.exports = {
             );
             return result;
     },
-    //search all datas of table arg: name, sep, num
-    searchAllItems: async function searchAllItems(branch){
-            const table = 'tibet_' + branch;  
+    //search all datas of table arg: name, sep, num, stop
+    searchAllItems: async function searchAllItems(branch, lang){
+            const table = lang + '_' + branch;  
             const Table = sequelize.define(table, {
                 arg: Sequelize.STRING,
                 content: Sequelize.STRING, 
@@ -74,8 +74,8 @@ module.exports = {
             return contents;
     },
     //create itm
-    createItem: async function createItem(branch, arg, con){
-            const table = 'tibet_' + branch;  
+    createItem: async function createItem(branch, arg, con, lang){
+            const table = lang + '_' + branch;  
             const Table = sequelize.define(table, {
                 arg: Sequelize.STRING,
                 content: Sequelize.STRING, 
@@ -102,8 +102,8 @@ module.exports = {
             }
     },
 
-    deleteItem: async function deleteItem(branch, arg) {
-        const table = 'tibet_' + branch;  
+    deleteItem: async function deleteItem(branch, arg, lang) {
+        const table = lang + '_' + branch;  
         const Table = sequelize.define(table, {
             arg: Sequelize.STRING,
             content: Sequelize.STRING, 
@@ -121,8 +121,8 @@ module.exports = {
         }
     },
 
-    updateItem: async function updateItem(branch, arg, con) {
-        const table = 'tibet_' + branch;  
+    updateItem: async function updateItem(branch, arg, con, lang) {
+        const table = lang + '_' + branch;  
         const Table = sequelize.define(table, {
             arg: Sequelize.STRING,
             content: Sequelize.STRING, 
