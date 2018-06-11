@@ -34,22 +34,41 @@ export default class WordRouter {
       const result = await sqlopr.searchWord(initial);
       ctx.body = { result };
     }
+    else if (lang == 'urdu'){
+      const result = await sqlopr.searchUrdu();
+      ctx.body = {result};
+    }
     else{
       ctx.body = {msg_todo};
     }
   }
 
-  @request('get', '/dic/{lang}/word/{eng}')
+  @request('get', '/dic/{lang}/word/{key}')
   @summary('get trans by english')
   @middlewares(checkToken)
   @tag
   @path({ lang: { type: 'string', required: true },
-          eng: { type: 'string', required: true }
+          key: { type: 'string', required: true }
   })
   static async getOneWord(ctx) {
-    const {lang, eng} = ctx.validatedParams;
+    const {lang, key} = ctx.validatedParams;
     if(lang == 'tibet'){
-      const result = await sqlopr.searchTrans(eng);
+      const result = await sqlopr.searchTrans(key);
+      ctx.body = { result };
+    }
+    else if(lang == 'urdu'){
+      let eng = await sqlopr.searchU2e(key);
+      let result = {};
+      result.urdu = key;
+      result.english = [];
+      result.chinese = [];
+      eng = eng.split('|');
+      for (let i = 0; i < eng.length; i++){
+        let item = await sqlopr.searchE2c(eng[i]);
+        result.english.push(item.english);
+        result.chinese.push(item.chinese);
+      }
+      // console.log(result.chinese);
       ctx.body = { result };
     }
     else{

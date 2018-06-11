@@ -10,6 +10,14 @@ const Word = sequelize.define('tibet', {
     chinese: Sequelize.STRING(2040),
     zang: Sequelize.STRING(2040)
 });
+const Urdu_u2e = sequelize.define('urdu_u2e', {
+    urdu: {type: Sequelize.STRING, allowNull: false},
+    english: {type: Sequelize.STRING(2040), allowNull: false},
+});
+const Urdu_e2c = sequelize.define('urdu_e2c', {
+    english: Sequelize.STRING,
+    chinese: Sequelize.STRING(2040),
+});
 
 
 module.exports = {
@@ -57,6 +65,49 @@ module.exports = {
             }
             );
             return result;
+    },
+    //dic for urdu
+    searchUrdu: async function searchUrdu(){
+        const result = await Urdu_u2e.findAll({
+            limit: 5,
+            attributes:[
+                'urdu'
+            ],
+        });
+        return result
+    },
+    searchU2e: async function searchU2e(urdu){
+        const result = await Urdu_u2e.findOne({
+            attributes:[
+                'urdu','english'
+            ],
+            where:{
+                urdu: urdu
+            }
+        });
+        if(result == null){
+            return '该条不存在';
+        }
+        else{
+            return result.english; 
+        }
+    },
+
+    searchE2c: async function searchE2c(english){
+        const result = await Urdu_e2c.findOne({
+            attributes:[
+                'english','chinese'
+            ],
+            where:{
+                english: english
+            }
+        });
+        if(result == null){
+            return '该条不存在';
+        }
+        else{
+            return result; 
+        }
     },
     //search all datas of table arg: name, sep, num, stop
     searchAllItems: async function searchAllItems(branch, lang){
