@@ -23,7 +23,7 @@ export default class WordRouter {
 
   @request('get', '/dic/{lang}/words')
   @summary('word list')
-  @middlewares(checkToken)
+  // @middlewares(checkToken)
   @tag
   @path({ lang: { type: 'string', required: true } })
   @query({ initial: { type: 'string', default: 1, required: true, description: 'initial' } })
@@ -38,6 +38,10 @@ export default class WordRouter {
       const result = await sqlopr.searchUrdu();
       ctx.body = {result};
     }
+    else if (lang == 'uighur'){
+      const result = await sqlopr.searchUighur();
+      ctx.body = {result};
+    }
     else{
       ctx.body = {msg_todo};
     }
@@ -45,7 +49,7 @@ export default class WordRouter {
 
   @request('get', '/dic/{lang}/word/{key}')
   @summary('get trans by english')
-  @middlewares(checkToken)
+  // @middlewares(checkToken)
   @tag
   @path({ lang: { type: 'string', required: true },
           key: { type: 'string', required: true }
@@ -64,11 +68,16 @@ export default class WordRouter {
       result.chinese = [];
       eng = eng.split('|');
       for (let i = 0; i < eng.length; i++){
+        result.english.push(eng[i]);
         let item = await sqlopr.searchE2c(eng[i]);
-        result.english.push(item.english);
         result.chinese.push(item.chinese);
       }
       // console.log(result.chinese);
+      ctx.body = { result };
+    }
+    else if (lang == 'uighur'){
+      let result = await sqlopr.searchU2c(key);
+      
       ctx.body = { result };
     }
     else{

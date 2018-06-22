@@ -1,5 +1,5 @@
 import Sequelize from 'sequelize';
-
+import request from 'request';
 const sequelize = new Sequelize('minority_language', 'root', null, {
     host: '127.0.0.1',
     dialect: 'mysql'
@@ -18,8 +18,31 @@ const Urdu_e2c = sequelize.define('urdu_e2c', {
     english: Sequelize.STRING,
     chinese: Sequelize.STRING(2040),
 });
-
-
+const Uighur_u2c = sequelize.define('uighur_u2c', {
+    uighur: {type: Sequelize.STRING(2040), allowNull: false},
+    chinese: {type: Sequelize.STRING(2040), allowNull: false},
+});
+// const Uighur_c2e = sequelize.define('urdu_e2c', {
+//     english: Sequelize.STRING,
+//     chinese: Sequelize.STRING(2040),
+// });
+function getData(chinese){
+    return new Promise(function(resolve, reject){
+        let formData = {
+            lang : 'zh-cn_en',
+            src : chinese,
+        };
+        request.post({url:'https://nmt.xmu.edu.cn/nmt', form: formData}, function optionalCallback(err, httpResponse, body){
+                if (err) {
+                    reject(err);
+                }
+                else{
+                    resolve(body);
+                }
+            })
+    })
+    
+}
 module.exports = {
     //search words: english of initial: such as 'a'
     searchWord: async function searchWord(initial){
@@ -69,7 +92,6 @@ module.exports = {
     //dic for urdu
     searchUrdu: async function searchUrdu(){
         const result = await Urdu_u2e.findAll({
-            limit: 5,
             attributes:[
                 'urdu'
             ],
@@ -108,6 +130,31 @@ module.exports = {
         else{
             return result; 
         }
+    },
+
+    //dic for uighur
+    searchUighur: async function searchUighur(){
+        const result = await Uighur_u2c.findAll({
+            attributes:[
+                'uighur'
+            ],
+        });
+        return result
+    },
+    searchU2c: async function searchU2c(uighur){
+        const item = await Uighur_u2c.findOne({
+            attributes:[
+                'uighur','chinese'
+            ],
+            where:{
+                uighur: uighur
+            }
+        });
+        let result = {};
+        result.chinese = item.chinese;
+        result.english = await getData(result.chinese);
+        console.log(result);
+        return result;
     },
     //search all datas of table arg: name, sep, num, stop
     searchAllItems: async function searchAllItems(branch, lang){
