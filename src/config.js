@@ -9,8 +9,8 @@ const common = {
   },
   baseLanguage: {
     lang_config:{
-      english: ['tibet', 'urdu'],
-      chinese: ['藏语', '乌尔都语'],
+      english: ['tibet', 'urdu', 'uighur'],
+      chinese: ['藏语', '乌尔都语', '维吾尔语'],
     },
   }
 };

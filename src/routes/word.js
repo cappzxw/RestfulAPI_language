@@ -23,7 +23,7 @@ export default class WordRouter {
 
   @request('get', '/dic/{lang}/words')
   @summary('word list')
-  // @middlewares(checkToken)
+  @middlewares(checkToken)
   @tag
   @path({ lang: { type: 'string', required: true } })
   @query({ initial: { type: 'string', default: 1, required: true, description: 'initial' } })
@@ -49,7 +49,7 @@ export default class WordRouter {
 
   @request('get', '/dic/{lang}/word/{key}')
   @summary('get trans by english')
-  // @middlewares(checkToken)
+  @middlewares(checkToken)
   @tag
   @path({ lang: { type: 'string', required: true },
           key: { type: 'string', required: true }
