@@ -23,10 +23,12 @@ export default class WordRouter {
 
   @request('get', '/dic/{lang}/words')
   @summary('word list')
-  @middlewares(checkToken)
+  // @middlewares(checkToken)
   @tag
   @path({ lang: { type: 'string', required: true } })
-  @query({ initial: { type: 'string', default: 1, required: true, description: 'initial' } })
+  @query({ initial: { type: 'string', default: 1, required: true, description: 'initial' },
+          //  page: { type: 'int', default: 1}
+ })
   static async getAllWords(ctx) {
     const { lang } = ctx.validatedParams;
     if(lang == 'tibet'){
@@ -35,12 +37,16 @@ export default class WordRouter {
       ctx.body = { result };
     }
     else if (lang == 'urdu'){
-      const result = await sqlopr.searchUrdu();
-      ctx.body = {result};
+      const initial = ctx.query.initial;
+      const page = parseInt(initial);
+      const result = await sqlopr.searchUrdu(page);
+      ctx.body = result;
     }
     else if (lang == 'uighur'){
-      const result = await sqlopr.searchUighur();
-      ctx.body = {result};
+      const initial = ctx.query.initial;
+      const page = parseInt(initial);
+      const result = await sqlopr.searchUighur(page);
+      ctx.body = result;
     }
     else{
       ctx.body = {msg_todo};
@@ -49,7 +55,7 @@ export default class WordRouter {
 
   @request('get', '/dic/{lang}/word/{key}')
   @summary('get trans by english')
-  @middlewares(checkToken)
+  // @middlewares(checkToken)
   @tag
   @path({ lang: { type: 'string', required: true },
           key: { type: 'string', required: true }

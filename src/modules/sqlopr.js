@@ -90,13 +90,24 @@ module.exports = {
             return result;
     },
     //dic for urdu
-    searchUrdu: async function searchUrdu(){
+    searchUrdu: async function searchUrdu(page){
+        const num = await Urdu_u2e.count();
+        let data = {};
+        let offset = (page-1) * 1000;
+        let limit = 1000;
+        if (page*1000 > num){
+            limit = num - offset;
+        }
         const result = await Urdu_u2e.findAll({
+            offset: offset,
+            limit: limit,
             attributes:[
-                'urdu'
+                'id', 'urdu'
             ],
         });
-        return result
+        data.result = result;
+        data.num = num;
+        return data;
     },
     searchU2e: async function searchU2e(urdu){
         const result = await Urdu_u2e.findOne({
@@ -133,13 +144,24 @@ module.exports = {
     },
 
     //dic for uighur
-    searchUighur: async function searchUighur(){
+    searchUighur: async function searchUighur(page){
+        const num = await Uighur_u2c.count();
+        let data = {};
+        let offset = (page-1) * 1000;
+        let limit = 1000;
+        if (page*1000 > num){
+            limit = num - offset;
+        }
         const result = await Uighur_u2c.findAll({
+            offset: offset,
+            limit: limit,
             attributes:[
-                'uighur'
+                'id', 'uighur'
             ],
         });
-        return result
+        data.result = result;
+        data.num = num;
+        return data;
     },
     searchU2c: async function searchU2c(uighur){
         const item = await Uighur_u2c.findOne({
@@ -151,8 +173,13 @@ module.exports = {
             }
         });
         let result = {};
-        result.chinese = item.chinese;
-        result.english = await getData(result.chinese);
+        result.chinese = [];
+        let arr = item.chinese.split('|');
+        for (let i = 0; i < arr.length; i++){
+            result.chinese.push(arr[i]);
+        }
+        
+        // result.english = await getData(result.chinese);
         console.log(result);
         return result;
     },
