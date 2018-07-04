@@ -179,8 +179,8 @@ module.exports = {
             result.chinese.push(arr[i]);
         }
         
-        // result.english = await getData(result.chinese);
-        console.log(result);
+        result.english = await getData(result.chinese);
+        // console.log(result);
         return result;
     },
     //search all datas of table arg: name, sep, num, stop
