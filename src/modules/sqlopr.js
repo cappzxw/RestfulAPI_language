@@ -177,10 +177,8 @@ module.exports = {
         let arr = item.chinese.split('|');
         for (let i = 0; i < arr.length; i++){
             result.chinese.push(arr[i]);
+            result.english = await getData(arr[i]);
         }
-        
-        result.english = await getData(result.chinese);
-        // console.log(result);
         return result;
     },
     //search all datas of table arg: name, sep, num, stop
