@@ -22,27 +22,27 @@ const Uighur_u2c = sequelize.define('uighur_u2c', {
     uighur: {type: Sequelize.STRING(2040), allowNull: false},
     chinese: {type: Sequelize.STRING(2040), allowNull: false},
 });
-// const Uighur_c2e = sequelize.define('urdu_e2c', {
-//     english: Sequelize.STRING,
-//     chinese: Sequelize.STRING(2040),
-// });
-function getData(chinese){
-    return new Promise(function(resolve, reject){
-        let formData = {
-            lang : 'zh-cn_en',
-            src : chinese,
-        };
-        request.post({url:'https://nmt.xmu.edu.cn/nmt', form: formData}, function optionalCallback(err, httpResponse, body){
-                if (err) {
-                    reject(err);
-                }
-                else{
-                    resolve(body);
-                }
-            })
-    })
+const Uighur_c2e = sequelize.define('uighur_c2e', {
+    chinese: {type: Sequelize.STRING(2040), allowNull: false},
+    english: {type: Sequelize.STRING(2040), allowNull: false},
+});
+// function getData(chinese){
+//     return new Promise(function(resolve, reject){
+//         let formData = {
+//             lang : 'zh-cn_en',
+//             src : chinese,
+//         };
+//         request.post({url:'https://nmt.xmu.edu.cn/nmt', form: formData}, function optionalCallback(err, httpResponse, body){
+//                 if (err) {
+//                     reject(err);
+//                 }
+//                 else{
+//                     resolve(body);
+//                 }
+//             })
+//     })
     
-}
+// }
 module.exports = {
     //search words: english of initial: such as 'a'
     searchWord: async function searchWord(initial){
@@ -164,7 +164,7 @@ module.exports = {
         return data;
     },
     searchU2c: async function searchU2c(uighur){
-        const item = await Uighur_u2c.findOne({
+        const result = await Uighur_u2c.findOne({
             attributes:[
                 'uighur','chinese'
             ],
@@ -172,15 +172,28 @@ module.exports = {
                 uighur: uighur
             }
         });
-        let result = {};
-        result.chinese = [];
-        let arr = item.chinese.split('|');
-        for (let i = 0; i < arr.length; i++){
-            result.chinese.push(arr[i]);
-            result.english = await getData(arr[i]);
-        }
-        return result;
+        // let result = {};
+        // result.chinese = [];
+        // let arr = item.chinese.split('|');
+        // for (let i = 0; i < arr.length; i++){
+        //     result.chinese.push(arr[i]);
+        //     result.english = await getData(arr[i]);
+        // }
+        return result.chinese;
     },
+    searchC2e: async function searchC2e(chinese){
+        const result = await Uighur_c2e.findOne({
+            attributes:[
+                'chinese', 'english'
+            ],
+            where:{
+                chinese: chinese
+            }
+        });
+
+        return result.english;
+    },
+
     //search all datas of table arg: name, sep, num, stop
     searchAllItems: async function searchAllItems(branch, lang){
             const table = lang + '_' + branch;  

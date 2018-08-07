@@ -23,7 +23,7 @@ export default class WordRouter {
 
   @request('get', '/dic/{lang}/words')
   @summary('word list')
-  // @middlewares(checkToken)
+  @middlewares(checkToken)
   @tag
   @path({ lang: { type: 'string', required: true } })
   @query({ initial: { type: 'string', default: 1, required: true, description: 'initial' },
@@ -55,7 +55,7 @@ export default class WordRouter {
 
   @request('get', '/dic/{lang}/word/{key}')
   @summary('get trans by english')
-  // @middlewares(checkToken)
+  @middlewares(checkToken)
   @tag
   @path({ lang: { type: 'string', required: true },
           key: { type: 'string', required: true }
@@ -82,8 +82,14 @@ export default class WordRouter {
       ctx.body = { result };
     }
     else if (lang == 'uighur'){
-      let result = await sqlopr.searchU2c(key);
-      
+      let ch = await sqlopr.searchU2c(key);
+      let result = {};
+      result.uighur = key;
+      result.chinese = [];
+      result.english = [];
+      result.chinese.push(ch);
+      let eng = await sqlopr.searchC2e(ch);
+      result.english.push(eng);
       ctx.body = { result };
     }
     else{
