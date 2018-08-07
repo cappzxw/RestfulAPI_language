@@ -190,7 +190,9 @@ module.exports = {
                 chinese: chinese
             }
         });
-
+        if(result == null){
+            return '暂无数据';
+        }
         return result.english;
     },
 
